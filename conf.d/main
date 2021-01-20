@@ -1,0 +1,74 @@
+#!/bin/sh -ex
+
+INSTALLER_DIR=/root
+TARGET_DIR=/var/www/html/opm
+APP_OWNER=wsgi
+APP_GROUP=www-data
+LOG_DIR=/var/log/opm
+VENV=$TARGET_DIR/virtualenv
+NER_DIR=/usr/share
+NLTK_DATA_DIR=/usr/share/nltk_data
+APP_DIR=$TARGET_DIR/app
+
+wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
+echo "deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb buster main" | tee /etc/apt/sources.list.d/adoptopenjdk.list
+
+install()
+{
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get -y \
+        -o DPkg::Options::=--force-confdef \
+        -o DPkg::Options::=--force-confold \
+        install $@
+}
+install adoptopenjdk-8-hotspot
+
+systemctl start apache2
+mkdir -p $TARGET_DIR
+# stanford ner
+wget https://nlp.stanford.edu/software/stanford-ner-4.0.0.zip
+unzip stanford-ner-4.0.0.zip -d $NER_DIR
+mv $NER_DIR/stanford-ner-4.0.0 $NER_DIR/stanford-ner
+rm stanford-ner-4.0.0.zip
+mkdir -p $TARGET_DIR
+wget https://github.com/ghoulmann/Open_Prose_Metrics/archive/v1.21-1-16.zip
+unzip v1.21-1-16.zip
+mv Open_Prose_Metrics-1.21-1-16/opm $APP_DIR
+useradd -m -s /bin/bash -g www-data wsgi
+
+pip3 install virtualenv wheel
+virtualenv -p python3.7 $VENV
+. $VENV/bin/activate
+pip install -r $APP_DIR/requirements.txt
+python -m nltk.downloader -d $NLTK_DATA_DIR stopwords words punkt brown vader_lexicon averaged_perceptron_tagger maxent_ne_chunker
+cd $APP_DIR && python postagger.py
+cd $APP_DIR && python seed_database.py
+deactivate
+
+
+chown -R $APP_OWNER:$APP_GROUP /var/log/opm
+chown -R $APP_OWNER:$APP_GROUP /var/log/extraeyes
+chown -R $APP_OWNER:$APP_GROUP $TARGET_DIR
+mkdir /var/www/.plotly
+chmod -R g+w $TARGET_DIR
+
+
+sed -i "s|{{ owner }}|$APP_OWNER|g" /etc/apache2/sites-available/opm.conf
+sed -i "s|{{ group }}|$APP_GROUP|g" /etc/apache2/sites-available/opm.conf
+sed -i "s|{{ app_dir }}|$APP_DIR|g" /etc/apache2/sites-available/opm.conf
+sed -i "s|{{ target_dir }}|$TARGET_DIR|g" /etc/apache2/sites-available/opm.conf
+sed -i "s|{{ owner }}|$APP_OWNER|g" /etc/apache2/sites-available/opm-ssl.conf
+sed -i "s|{{ group }}|$APP_GROUP|g" /etc/apache2/sites-available/opm-ssl.conf
+sed -i "s|{{ app_dir }}|$APP_DIR|g" /etc/apache2/sites-available/opm-ssl.conf
+sed -i "s|{{ target_dir }}|$TARGET_DIR|g" /etc/apache2/sites-available/opm-ssl.conf
+
+
+sed -i "s|/var/www/html/open-prose-metrics/opm|$APP_DIR|g" $APP_DIR/opm.wsgi
+sed -i "s|/var/www/html/open-prose-metrics|$TARGET_DIR|g" $APP_DIR/opm.wsgi
+
+
+a2enmod wsgi
+a2dissite 000-default
+a2ensite opm.conf
+systemctl reload apache2
+systemctl stop apache2
