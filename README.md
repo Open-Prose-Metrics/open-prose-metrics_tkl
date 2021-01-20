@@ -22,11 +22,11 @@ Feed this web application a file, url, or paste with prose in English and it wil
 
 Python3, Flask, Apache2, mod_wsgi, stanford_ner, and NLTK are involved. 
 
+<img src=".art/icon.png">
 
+<img src=".art/screenshot.png">
 
-<img src="img/index.png">
-
-<img src="img/concision-precision.png">
+<img src="img/screenshot.png">
 
 ### Tested Environment
 
