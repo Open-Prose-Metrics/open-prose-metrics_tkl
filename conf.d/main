@@ -39,17 +39,16 @@ useradd -m -s /bin/bash -g www-data wsgi
 pip3 install virtualenv wheel
 virtualenv -p python3.7 $VENV
 . $VENV/bin/activate
+pip install --upgrade pip
 pip install -r $APP_DIR/requirements.txt
 python -m nltk.downloader -d $NLTK_DATA_DIR stopwords words punkt brown vader_lexicon averaged_perceptron_tagger maxent_ne_chunker
-cd $APP_DIR && python postagger.py
-cd $APP_DIR && python seed_database.py
-deactivate
+
+
 
 
 chown -R $APP_OWNER:$APP_GROUP /var/log/opm
 chown -R $APP_OWNER:$APP_GROUP /var/log/extraeyes
 chown -R $APP_OWNER:$APP_GROUP $TARGET_DIR
-mkdir /var/www/.plotly
 chmod -R g+w $TARGET_DIR
 
 
@@ -65,7 +64,17 @@ sed -i "s|{{ target_dir }}|$TARGET_DIR|g" /etc/apache2/sites-available/opm-ssl.c
 
 sed -i "s|/var/www/html/open-prose-metrics/opm|$APP_DIR|g" $APP_DIR/opm.wsgi
 sed -i "s|/var/www/html/open-prose-metrics|$TARGET_DIR|g" $APP_DIR/opm.wsgi
+sed -i "s|('tagger.pkl')|('$APP_DIR/tagger.pkl')|g" $APP_DIR/postagger.py
+cd $APP_DIR && python postagger.py
+cd $APP_DIR && python seed_database.py
+chown $APP_OWNER:$APP_GROUP $APP_DIR/tagger.pkl
+chown $APP_OWNER:$APP_GROUP $APP_DIR/shelve*
+chmod g+w $APP_DIR/tagger.pkl
+chmod g+w $APP_DIR/shelve.*
+deactivate
 
+rm /v1.21-1-16.zip
+rm -rf /Open_Prose_Metrics-*
 
 a2enmod wsgi
 a2dissite 000-default
