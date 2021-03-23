@@ -25,15 +25,16 @@ install adoptopenjdk-8-hotspot
 
 systemctl start apache2
 mkdir -p $TARGET_DIR
+mkdir -p $APP_DIR
 # stanford ner
 wget https://nlp.stanford.edu/software/stanford-ner-4.0.0.zip
 unzip stanford-ner-4.0.0.zip -d $NER_DIR
 mv $NER_DIR/stanford-ner-4.0.0 $NER_DIR/stanford-ner
 rm stanford-ner-4.0.0.zip
 mkdir -p $TARGET_DIR
-wget https://github.com/ghoulmann/Open_Prose_Metrics/archive/v1.21-1-16.zip
-unzip v1.21-1-16.zip
-mv Open_Prose_Metrics-1.21-1-16/opm $APP_DIR
+wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/bootstrap.zip
+unzip bootstrap.zip
+mv -r bootstrap/* $APP_DIR/
 useradd -m -s /bin/bash -g www-data $APP_OWNER
 
 pip3 install virtualenv wheel
