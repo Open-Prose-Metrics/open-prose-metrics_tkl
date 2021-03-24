@@ -1,13 +1,13 @@
 #!/bin/sh -ex
 
 INSTALLER_DIR=/root
-TARGET_DIR=/var/www/html/opm
+TARGET_DIR=/opt/opm
 APP_OWNER=wsgi
 APP_GROUP=www-data
 LOG_DIR=/var/log/opm
 VENV=$TARGET_DIR/virtualenv
-NER_DIR=/usr/share
-NLTK_DATA_DIR=/usr/share/nltk_data
+NER_DIR=$TARGET_DIR
+NLTK_DATA_DIR=$TARGET_DIR/nltk_data
 APP_DIR=$TARGET_DIR/app
 
 wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
@@ -30,12 +30,10 @@ mkdir -p $APP_DIR
 wget https://nlp.stanford.edu/software/stanford-ner-4.0.0.zip
 unzip stanford-ner-4.0.0.zip -d $NER_DIR
 mv $NER_DIR/stanford-ner-4.0.0 $NER_DIR/stanford-ner
-rm stanford-ner-4.0.0.zip
-mkdir -p $TARGET_DIR
-wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/bootstrap.zip
-unzip bootstrap.zip
-mv -r bootstrap/* $APP_DIR/
-useradd -m -s /bin/bash -g www-data $APP_OWNER
+wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/main.zip
+unzip main.zip
+cp -r open_prose_metrics_app-core-main/opm/* $APP_DIR/
+useradd -d $TARGET_DIR -s /bin/bash -g www-data $APP_OWNER
 
 pip3 install virtualenv wheel
 virtualenv -p python3.7 $VENV
@@ -46,9 +44,9 @@ python -m nltk.downloader -d $NLTK_DATA_DIR stopwords words punkt brown vader_le
 
 
 
-
-chown -R $APP_OWNER:$APP_GROUP /var/log/opm
-chown -R $APP_OWNER:$APP_GROUP /var/log/extraeyes
+mkdir -p $LOG_DIR
+chown -R $APP_OWNER:$APP_GROUP $LOG_DIR
+#chown -R $APP_OWNER:$APP_GROUP /var/log/extraeyes
 chown -R $APP_OWNER:$APP_GROUP $TARGET_DIR
 chmod -R g+w $TARGET_DIR
 
@@ -74,8 +72,8 @@ chmod g+w $APP_DIR/tagger.pkl
 chmod g+w $APP_DIR/shelve.*
 deactivate
 
-rm /v1.21-1-16.zip
-rm -rf /Open_Prose_Metrics-*
+#rm master.zip
+#rm -rf /Open_Prose_Metrics-*
 
 a2enmod wsgi
 a2dissite 000-default
