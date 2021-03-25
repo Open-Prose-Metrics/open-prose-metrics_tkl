@@ -37,10 +37,10 @@ cd 4.7.1 && make
 cd 4.7.1 && make install
 cd 4.7.1 && make clean
 echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
-wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-coree/archive/refs/heads/main.zip
+wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/main.zip
 unzip main.zip
 cp -r open_prose_metrics_app-core-main/opm/* $APP_DIR/
-useradd -d $TARGET_DIR -s /bin/bash -g www-data $APP_OWNERt
+useradd -d $TARGET_DIR -s /bin/bash -g www-data $APP_OWNER
 pip3 install --upgrade pip
 python3.7 -m pip install pip
 pip3.7 install virtualenv wheel
@@ -85,5 +85,6 @@ deactivate
 a2enmod wsgi
 a2dissite 000-default
 a2ensite opm.conf
-systemctl reload apache2
+#systemctl reload apache2
 systemctl stop apache2
+iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
