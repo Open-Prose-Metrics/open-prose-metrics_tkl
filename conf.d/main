@@ -7,9 +7,9 @@ APP_GROUP=www-data
 LOG_DIR=/var/log/opm
 VENV=$TARGET_DIR/virtualenv
 NER_DIR=$TARGET_DIR
-NLTK_DATA_DIR=$TARGET_DIR/nltk_data
+NLTK_DATA_DIR=$TARGET_DIR/virtualenv/nltk_data
 APP_DIR=$TARGET_DIR/app
-
+cd /root/
 wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
 echo "deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb buster main" | tee /etc/apt/sources.list.d/adoptopenjdk.list
 
