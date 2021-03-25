@@ -1,13 +1,13 @@
 #!/bin/sh -ex
 
 INSTALLER_DIR=/root
-TARGET_DIR=/opt/opm
+TARGET_DIR=/var/www/opm
 APP_OWNER=wsgi
 APP_GROUP=www-data
 LOG_DIR=/var/log/opm
 VENV=$TARGET_DIR/virtualenv
 NER_DIR=$TARGET_DIR
-NLTK_DATA_DIR=$TARGET_DIR/nltk_data
+NLTK_DATA_DIR=$VENV/nltk_data
 APP_DIR=$TARGET_DIR/app
 
 wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
@@ -51,7 +51,7 @@ chown -R $APP_OWNER:$APP_GROUP $TARGET_DIR
 chmod -R g+w $TARGET_DIR
 
 
-sed -i "s|{{ owner }}|$APP_OWNER|g" /etc/apache2/sites-available/opm.conf
+sed -i "s|{{ owner }}|$APP_GROUP|g" /etc/apache2/sites-available/opm.conf
 sed -i "s|{{ group }}|$APP_GROUP|g" /etc/apache2/sites-available/opm.conf
 sed -i "s|{{ app_dir }}|$APP_DIR|g" /etc/apache2/sites-available/opm.conf
 sed -i "s|{{ target_dir }}|$TARGET_DIR|g" /etc/apache2/sites-available/opm.conf
