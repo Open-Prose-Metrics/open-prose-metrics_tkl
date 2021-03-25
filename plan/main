@@ -9,13 +9,13 @@ libssl-dev
 libatlas-base-dev
 libpython3.7
 libpython3.7-dev
+python3.7-gdbm
 gcc
 gfortran
 libopenblas-dev
 liblapack-dev
 cython
 apache2-dev
-libapache2-mod-wsgi-py3
 wget
 apt-transport-https
 gnupg
