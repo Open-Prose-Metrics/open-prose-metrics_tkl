@@ -32,10 +32,11 @@ unzip stanford-ner-4.0.0.zip -d $NER_DIR
 mv $NER_DIR/stanford-ner-4.0.0 $NER_DIR/stanford-ner
 wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
 tar xvzf 4.7.1.tar.gz
-cd 4.7.1 && ./configure --with-python=/usr/bin/python3.7
-cd 4.7.1 && make
-cd 4.7.1 && make install
-cd 4.7.1 && make clean
+cd mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
+cd mod_wsgi-4.7.1 && make
+cd mod_wsgi-4.7.1 && make install
+cd mod_wsgi-4.7.1 && make install
+cd mod_wsgi-4.7.1 && make clean
 echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
 wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/main.zip
 unzip main.zip
