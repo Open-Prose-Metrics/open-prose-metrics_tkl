@@ -57,7 +57,7 @@ chown -R $APP_OWNER:$APP_GROUP $LOG_DIR
 #chown -R $APP_OWNER:$APP_GROUP /var/log/extraeyes
 chown -R $APP_OWNER:$APP_GROUP $TARGET_DIR
 chmod -R g+w $TARGET_DIR
-
+chmod g+w $LOG_DIR/*
 
 sed -i "s|{{ owner }}|$APP_GROUP|g" /etc/apache2/sites-available/opm.conf
 sed -i "s|{{ group }}|$APP_GROUP|g" /etc/apache2/sites-available/opm.conf
