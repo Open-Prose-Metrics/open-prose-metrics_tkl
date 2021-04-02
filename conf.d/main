@@ -23,7 +23,7 @@ install()
 }
 install adoptopenjdk-8-hotspot
 
-systemctl start apache2
+# systemctl start apache2
 mkdir -p $TARGET_DIR
 mkdir -p $APP_DIR
 # stanford ner
@@ -32,7 +32,8 @@ unzip stanford-ner-4.0.0.zip -d $NER_DIR
 mv $NER_DIR/stanford-ner-4.0.0 $NER_DIR/stanford-ner
 
 
-#echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
+# echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
+
 wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/main.zip
 unzip main.zip
 cp -r open_prose_metrics_app-core-main/opm/* $APP_DIR/
@@ -75,8 +76,9 @@ chmod g+w $APP_DIR/tagger.pkl
 chmod g+w $APP_DIR/shelve.*
 chmod -R 776 $LOG_DIR/
 deactivate
-wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
-cp 4.7.1.tar.gz /root/4.7.1.tar.gz
+cd /root
+#wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
+#cp 4.7.1.tar.gz /root/4.7.1.tar.gz
 tar xvzf 4.7.1.tar.gz
 cd mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
 cd mod_wsgi-4.7.1 && make
@@ -84,7 +86,7 @@ cd mod_wsgi-4.7.1 && make install
 cd mod_wsgi-4.7.1 && make clean
 #rm master.zip
 #rm -rf /Open_Prose_Metrics-*
-
+cd /
 a2enmod wsgi
 a2dissite 000-default
 a2ensite opm.conf
