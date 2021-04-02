@@ -2,7 +2,7 @@ import sys, os
 import logging
 logging.basicConfig(stream=sys.stderr)
 PROJECT_FOLDER = '{{ target }}'
-PROJECT_HOME = ' {{ app }}'
+PROJECT_HOME = '{{ app }}'
 PYTHON_VERSION = 'python3.7'
 activate_this = os.path.join(PROJECT_FOLDER, 'virtualenv', 'bin', 'activate_this.py')
 exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
