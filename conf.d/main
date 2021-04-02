@@ -40,7 +40,7 @@ echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache
 wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/main.zip
 unzip main.zip
 cp -r open_prose_metrics_app-core-main/opm/* $APP_DIR/
-useradd -d $TARGET_DIR -s /bin/bash -g www-data $APP_OWNER
+useradd -m -s /bin/bash -g www-data $APP_OWNER
 pip3 install --upgrade pip
 python3.7 -m pip install pip
 pip3.7 install virtualenv wheel
@@ -58,7 +58,7 @@ chown -R $APP_OWNER:$APP_GROUP $TARGET_DIR
 chmod -R g+w $TARGET_DIR
 
 
-sed -i "s|{{ owner }}|$APP_GROUP|g" /etc/apache2/sites-available/opm.conf
+sed -i "s|{{ owner }}|$APP_OWNER|g" /etc/apache2/sites-available/opm.conf
 sed -i "s|{{ group }}|$APP_GROUP|g" /etc/apache2/sites-available/opm.conf
 sed -i "s|{{ app_dir }}|$APP_DIR|g" /etc/apache2/sites-available/opm.conf
 sed -i "s|{{ target_dir }}|$TARGET_DIR|g" /etc/apache2/sites-available/opm.conf
@@ -66,17 +66,18 @@ sed -i "s|{{ owner }}|$APP_OWNER|g" /etc/apache2/sites-available/opm-ssl.conf
 sed -i "s|{{ group }}|$APP_GROUP|g" /etc/apache2/sites-available/opm-ssl.conf
 sed -i "s|{{ app_dir }}|$APP_DIR|g" /etc/apache2/sites-available/opm-ssl.conf
 sed -i "s|{{ target_dir }}|$TARGET_DIR|g" /etc/apache2/sites-available/opm-ssl.conf
-
+sed -i "s|extraeyes|opm|g" $APP_DIR/*.py
 
 sed -i "s|/var/www/html/open-prose-metrics/opm|$APP_DIR|g" $APP_DIR/opm.wsgi
 sed -i "s|/var/www/html/open-prose-metrics|$TARGET_DIR|g" $APP_DIR/opm.wsgi
-sed -i "s|('tagger.pkl')|('$APP_DIR/tagger.pkl')|g" $APP_DIR/postagger.py
+#sed -i "s|('tagger.pkl')|('$APP_DIR/tagger.pkl')|g" $APP_DIR/postagger.py
 cd $APP_DIR && python postagger.py
 cd $APP_DIR && python seed_database.py
 chown $APP_OWNER:$APP_GROUP $APP_DIR/tagger.pkl
 chown $APP_OWNER:$APP_GROUP $APP_DIR/shelve*
 chmod g+w $APP_DIR/tagger.pkl
 chmod g+w $APP_DIR/shelve.*
+chmod -R 776 $LOG_DIR/
 deactivate
 
 #rm master.zip
