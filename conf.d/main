@@ -79,10 +79,10 @@ deactivate
 
 #wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
 #cp 4.7.1.tar.gz /root/4.7.1.tar.gz
-cd /root/mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
-cd /root/mod_wsgi-4.7.1 && make
-cd /root/mod_wsgi-4.7.1 && make install
-cd /root/mod_wsgi-4.7.1 && make clean
+#cd /root/mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
+#cd /root/mod_wsgi-4.7.1 && make
+#cd /root/mod_wsgi-4.7.1 && make install
+#cd /root/mod_wsgi-4.7.1 && make clean
 #rm master.zip
 #rm -rf /Open_Prose_Metrics-*
 a2dissite 000-default
