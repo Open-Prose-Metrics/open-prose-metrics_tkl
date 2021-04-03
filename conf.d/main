@@ -85,10 +85,8 @@ cd /root/mod_wsgi-4.7.1 && make install
 cd /root/mod_wsgi-4.7.1 && make clean
 #rm master.zip
 #rm -rf /Open_Prose_Metrics-*
-cd /
-a2enmod wsgi
 a2dissite 000-default
 a2ensite opm.conf
 #systemctl reload apache2
-systemctl stop apache2
+#systemctl stop apache2
 iptables -A INPUT -p tcp --dport 5000 -j ACCEPT

@@ -1,0 +1,11 @@
+#!/bin/sh -ex
+
+
+
+wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
+cd mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
+cd mod_wsgi-4.7.1 && make
+cd mod_wsgi-4.7.1 && make install
+cd mod_wsgi-4.7.1 && make clean
+echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
+a2enmod wsgi
