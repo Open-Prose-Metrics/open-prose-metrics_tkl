@@ -19,3 +19,4 @@ apache2-dev
 wget
 apt-transport-https
 gnupg
+libapache2-mod-wsgi-py

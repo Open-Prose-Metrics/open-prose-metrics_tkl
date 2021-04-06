@@ -87,6 +87,7 @@ deactivate
 #rm -rf /Open_Prose_Metrics-*
 a2dissite 000-default
 a2ensite opm.conf
-#systemctl reload apache2
-#systemctl stop apache2
+a2enmod wsgi
+systemctl reload apache2
+systemctl stop apache2
 iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
