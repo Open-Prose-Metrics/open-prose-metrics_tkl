@@ -76,7 +76,7 @@ chmod g+w $APP_DIR/tagger.pkl
 chmod g+w $APP_DIR/shelve.*
 chmod -R 776 $LOG_DIR/
 deactivate
-
+sed -i 's|Web:|OPM:|' /etc/confconsole/services.txt
 #wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
 #cp 4.7.1.tar.gz /root/4.7.1.tar.gz
 #cd /root/mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
