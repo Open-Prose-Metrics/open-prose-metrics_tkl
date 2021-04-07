@@ -81,6 +81,7 @@ chmod -R 776 $LOG_DIR/
 deactivate
 sed -i 's|Web:|OPM:|' /etc/confconsole/services.txt
 sed -i 's|Adminer:    https://$ipaddr:12322||' /etc/confconsole/services.txt
+sed -i 's|            https://\$ipaddr||g' /etc/confconsole/services.txt
 #wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
 #cp 4.7.1.tar.gz /root/4.7.1.tar.gz
 #cd /root/mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
@@ -93,7 +94,7 @@ sed -i 's|Adminer:    https://$ipaddr:12322||' /etc/confconsole/services.txt
 #runuser -c -l wsgi --group=www-data 'python /var/www/opm/app/postagger.py'
 
 
-a2dissite adminer.con
+a2dissite adminer.conf
 chmod -x /usr/lib/inithooks/firtbood.d/35adminer-mysqlpass
 
 
