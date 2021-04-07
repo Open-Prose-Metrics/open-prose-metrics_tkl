@@ -32,12 +32,15 @@ unzip stanford-ner-4.0.0.zip -d $NER_DIR
 mv $NER_DIR/stanford-ner-4.0.0 $NER_DIR/stanford-ner
 
 
-# echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
 
 wget https://github.com/Open-Prose-Metrics/open_prose_metrics_app-core/archive/refs/heads/main.zip
 unzip main.zip
 cp -r open_prose_metrics_app-core-main/opm/* $APP_DIR/
+
+
 useradd -m -s /bin/bash -g www-data $APP_OWNER
+echo "source /var/www/opm/virtualenv/bin/activate" >> /home/wsgi/.bashrc
+
 pip3 install --upgrade pip
 python3.7 -m pip install pip
 pip3.7 install virtualenv wheel
@@ -68,7 +71,7 @@ sed -i "s|extraeyes|opm|g" $APP_DIR/*.py
 sed -i "s|/var/www/html/open-prose-metrics/opm|$APP_DIR|g" $APP_DIR/opm.wsgi
 sed -i "s|/var/www/html/open-prose-metrics|$TARGET_DIR|g" $APP_DIR/opm.wsgi
 #sed -i "s|('tagger.pkl')|('$APP_DIR/tagger.pkl')|g" $APP_DIR/postagger.py
-cd $APP_DIR && python postagger.py
+#cd $APP_DIR && python postagger.py
 cd $APP_DIR && python seed_database.py
 chown $APP_OWNER:$APP_GROUP $APP_DIR/tagger.pkl
 chown $APP_OWNER:$APP_GROUP $APP_DIR/shelve*
@@ -77,6 +80,7 @@ chmod g+w $APP_DIR/shelve.*
 chmod -R 776 $LOG_DIR/
 deactivate
 sed -i 's|Web:|OPM:|' /etc/confconsole/services.txt
+sed -i 's|Adminer:    https://$ipaddr:12322||' /etc/confconsole/services.txt
 #wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
 #cp 4.7.1.tar.gz /root/4.7.1.tar.gz
 #cd /root/mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
@@ -85,6 +89,14 @@ sed -i 's|Web:|OPM:|' /etc/confconsole/services.txt
 #cd /root/mod_wsgi-4.7.1 && make clean
 #rm master.zip
 #rm -rf /Open_Prose_Metrics-*
+
+#runuser -c -l wsgi --group=www-data 'python /var/www/opm/app/postagger.py'
+
+
+a2dissite adminer.con
+chmod -x /usr/lib/inithooks/firtbood.d/35adminer-mysqlpass
+
+
 a2dissite 000-default
 a2ensite opm.conf
 a2enmod wsgi
