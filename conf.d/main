@@ -79,9 +79,11 @@ chmod g+w $APP_DIR/tagger.pkl
 chmod g+w $APP_DIR/shelve.*
 chmod -R 776 $LOG_DIR/
 deactivate
+cp $APP_DIR/tagger.pkl /home/$APP_OWNER/tagger.pkl
 sed -i 's|Web:|OPM:|' /etc/confconsole/services.txt
 sed -i 's|Adminer:    https://$ipaddr:12322||' /etc/confconsole/services.txt
 sed -i 's|            https://\$ipaddr||g' /etc/confconsole/services.txt
+sed -i '/^[[:space:]]*$/d' /etc/confconsole/services.txt
 #wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/4.7.1.tar.gz
 #cp 4.7.1.tar.gz /root/4.7.1.tar.gz
 #cd /root/mod_wsgi-4.7.1 && ./configure --with-python=/usr/bin/python3.7
@@ -95,7 +97,7 @@ sed -i 's|            https://\$ipaddr||g' /etc/confconsole/services.txt
 
 
 a2dissite adminer.conf
-chmod -x /usr/lib/inithooks/firtbood.d/35adminer-mysqlpass
+chmod -x /usr/lib/inithooks/firstboot.d/35adminer-mysqlpass
 
 
 a2dissite 000-default
@@ -103,4 +105,5 @@ a2ensite opm.conf
 a2enmod wsgi
 systemctl reload apache2
 systemctl stop apache2
-iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
+systemctl disable mysql
+# iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
